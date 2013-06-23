@@ -26,15 +26,44 @@ namespace ProjectEuler74
 
         static void Main(string[] args)
         {
+            System.Diagnostics.Stopwatch Timer = new System.Diagnostics.Stopwatch();
+            Timer.Start();
+
             const int max = 2177281; // so the dict has everything beneath 1MM
             SortedDictionary<int, int> Facts = new SortedDictionary<int, int>();
 
-            for (int i = 1; i <= max; i++)
-            {
-                Facts.Add(i, DigitFactorialSum(i));
-            }
-            Console.WriteLine(Facts.Max(x => x.Value));
+            for (int i = 1; i <= max; i++) Facts.Add(i, DigitFactorialSum(i));
+            
+            int Tortoise, Hare, mu, lambda, answer=0;
 
+            for (int i = 1; i <= 1000000; i++)
+            {
+                Tortoise = Facts[i];
+                Hare = Facts[Tortoise];
+                while (Tortoise != Hare)
+                {
+                    Tortoise = Facts[Tortoise];
+                    Hare = Facts[Facts[Hare]];
+                }
+                mu = 0;
+                Tortoise = i;
+                while (Tortoise != Hare)
+                {
+                    Tortoise = Facts[Tortoise];
+                    Hare = Facts[Hare];
+                    mu++;
+                }
+                lambda = 1;
+                Hare = Facts[Tortoise];
+                while (Tortoise != Hare)
+                {
+                    Hare = Facts[Hare];
+                    lambda++;
+                }
+                if (mu + lambda == 60) answer++;
+            }
+            Console.WriteLine(answer);
+            Console.WriteLine(Timer.ElapsedMilliseconds);
         }
     }
 }
